@@ -1,64 +1,61 @@
-MentCare 🏥
+# 🏥 MentCare: AI-Powered Clinical Assistant
 
-🇬🇧 English
-MentCare is a multi-platform digital clinic assistant (macOS, iOS, iPadOS) powered by AI. It is designed to eliminate paperwork, digitize patient tracking, and strengthen clinical decision-making for healthcare professionals.
+---
 
-🚀 Key Features
-Multi-platform Experience: Seamless transition between Mac, iPad, and iPhone.
+## 🌐 Language / Dil
 
-AI Clinical Summary: An integrated AI engine that transforms complex clinical notes into professional summaries.
+* [English](https://www.google.com/search?q=%23-english)
+* [Türkçe](https://www.google.com/search?q=%23-t%C3%BCrk%C3%A7e)
 
-Patient Journey (Timeline): A visual timeline to track a patient’s entire medical history at a glance.
+---
 
-Smart Scheduling: An intuitive calendar for managing clinical appointments.
+## 🇬🇧 English
 
-Official PDF Export: Generate signed, professional clinical reports with a single tap.
+**MentCare** is a next-generation clinical management system designed for healthcare professionals. Built on the Apple ecosystem, it leverages Artificial Intelligence to transform raw clinical data into actionable insights while ensuring seamless synchronization across all devices.
 
-Cloud Sync: Secure and instant data synchronization across all devices.
+### ✨ Key Features
 
-🛠 Tech Stack
-SwiftUI: Declarative UI for a responsive and modern design.
+| Feature | Description |
+| --- | --- |
+| **Multi-Platform** | Unified experience across **macOS, iOS, and iPadOS**. |
+| **AI Insights** | Automatically generates professional summaries from clinical notes. |
+| **Patient Timeline** | A visual representation of the patient's entire medical journey. |
+| **Smart Calendar** | Integrated scheduling system with real-time status tracking. |
+| **Export Engine** | One-tap generation of signed, official PDF reports (A4 format). |
 
-SwiftData: For high-performance local data persistence and modeling.
+### 🛠 Technical Stack
 
-Firebase: Real-time cloud database, authentication, and secure infrastructure.
+* **Core UI:** SwiftUI (Responsive & Modern Layouts)
+* **Persistence:** **SwiftData** for local storage & **Firebase** for cloud sync.
+* **Intelligence:** Integrated NLP models for clinical summarization.
+* **Architecture:** Clean architecture with dedicated services for PDF rendering and data syncing.
 
-Artificial Intelligence (AI): Natural Language Processing (NLP) for medical report summarization.
+---
 
-ImageRenderer: Advanced rendering of SwiftUI views into high-quality PDF documents.
+## 🇹🇷 Türkçe
 
-🇹🇷 Türkçe
-MentCare, yapay zeka destekli ve çoklu platform (macOS, iOS, iPadOS) uyumlu bir dijital klinik asistanıdır. Sağlık çalışanlarının iş yükünü hafifletmek, hasta takibini dijitalleştirmek ve klinik karar süreçlerini hızlandırmak amacıyla geliştirilmiştir.
+**MentCare**, sağlık profesyonelleri için tasarlanmış yeni nesil bir klinik yönetim sistemidir. Apple ekosisteminin gücünü ve Yapay Zekayı kullanarak, klinik verileri anlamlı raporlara dönüştürür ve tüm cihazlar arasında kusursuz veri akışı sağlar.
 
-🚀 Öne Çıkan Özellikler
-Çoklu Platform Deneyimi: Mac, iPad ve iPhone arasında kesintisiz çalışma ve veri akışı.
+### ✨ Öne Çıkan Özellikler
 
-Yapay Zeka Destekli Özetleme: Karmaşık klinik notları saniyeler içinde profesyonel özetlere dönüştüren AI motoru.
+| Özellik | Açıklama |
+| --- | --- |
+| **Çoklu Platform** | **macOS, iOS ve iPadOS** üzerinde tek ve tutarlı deneyim. |
+| **AI Analizi** | Klinik notlardan otomatik olarak profesyonel özetler üretir. |
+| **Hasta Zaman Tüneli** | Hastanın tüm tıbbi geçmişinin görselleştirilmiş hali. |
+| **Akıllı Takvim** | Durum takibi yapılabilen entegre randevu sistemi. |
+| **Raporlama Motoru** | Tek tuşla imzalı, resmi PDF (A4) raporu oluşturma. |
 
-Hasta Yolculuğu (Timeline): Hastanın tıbbi geçmişini şık bir zaman tüneli üzerinde takip edebilme.
+### 🛠 Teknik Altyapı
 
-Akıllı Randevu Yönetimi: Klinik randevularını yönetmek için sezgisel takvim entegrasyonu.
+* **Arayüz:** SwiftUI (Modern ve duyarlı tasarım)
+* **Veri Yönetimi:** Yerel depolama için **SwiftData**, bulut senkronizasyonu için **Firebase**.
+* **Yapay Zeka:** Tıbbi notların analizi için entegre NLP modelleri.
+* **Mimari:** PDF render ve veri senkronizasyonu için özelleştirilmiş servis yapıları.
 
-Resmi PDF Çıktısı: Tek tıkla imzalı ve profesyonel formatta klinik raporlar oluşturma.
+---
+## 👨‍💻 Developer
 
-Bulut Senkronizasyonu: Tüm cihazlar arasında güvenli ve anlık veri senkronizasyonu.
+**Berkay Yaşar Turan** *Computer Engineering Student & Software Developer* [LinkedIn](https://www.google.com/search?q=https://www.linkedin.com/in/berkayyasarturan/) | [GitHub](https://www.google.com/search?q=https://github.com/byt1907)
 
-🛠 Kullanılan Teknolojiler
-SwiftUI: Modern ve duyarlı (responsive) arayüz tasarımı.
-
-SwiftData: Yüksek performanslı yerel veri saklama ve modelleme çözümü.
-
-Firebase: Gerçek zamanlı bulut veritabanı, kimlik doğrulama ve güvenli altyapı.
-
-Yapay Zeka (AI): Tıbbi raporların analizi ve özetlenmesi için entegre zeka çözümleri.
-
-ImageRenderer: SwiftUI görünümlerini yüksek çözünürlüklü PDF belgelerine dönüştürme sistemi.
-
-📂 Folder Structure / Proje Yapısı
-DashboardView: Clinic statistics and overview / Klinik istatistikleri ve genel bakış.
-
-PatientListView: Patient management and searching / Hasta yönetimi ve arama.
-
-ClinicCalendarView: Date-based appointment tracking / Tarih bazlı randevu takibi.
-
-PatientDetailView: Timeline, notes, and reporting / Zaman tüneli, notlar ve raporlama.
+---
