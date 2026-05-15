@@ -11,12 +11,9 @@ import SwiftData
 struct AddGeneralAppointmentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    
-    // Sistemdeki tüm hastaları isim/ID sırasına göre çeker
     @Query(sort: \Patient.patientID) private var patients: [Patient]
-    
     @State private var selectedPatient: Patient?
-    @State private var appointmentDate = Date().addingTimeInterval(86400) // Yarına ayarlı başlar
+    @State private var appointmentDate = Date().addingTimeInterval(86400)
     @State private var notes = "Routine clinic visit."
     
     var body: some View {
@@ -54,7 +51,7 @@ struct AddGeneralAppointmentView: View {
                         try? modelContext.save()
                         dismiss()
                     }
-                    .disabled(selectedPatient == nil) // Hasta seçilmeden kaydedilemez
+                    .disabled(selectedPatient == nil) 
                 }
             }
         }

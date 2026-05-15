@@ -31,8 +31,6 @@ struct ConsultationTimelineView: View {
             } else {
                 ForEach(Array(sortedConsultations.enumerated()), id: \.element.id) { index, consultation in
                     HStack(alignment: .top, spacing: 15) {
-                        
-                        // SOL TARAF: Timeline Çizgisi
                         VStack(spacing: 0) {
                             Circle()
                                 .fill(LinearGradient(colors: [.blue, .purple], startPoint: .top, endPoint: .bottom))
@@ -46,8 +44,6 @@ struct ConsultationTimelineView: View {
                                     .frame(width: 2)
                             }
                         }
-                        
-                        // SAĞ TARAF: Konsültasyon Kartı
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Text(consultation.consultationDate, style: .date)
@@ -82,7 +78,7 @@ struct ConsultationTimelineView: View {
                             }
                         }
                         .padding()
-                        .background(platformBackground) // HATA ÇÖZÜLDÜ
+                        .background(platformBackground) 
                         .cornerRadius(12)
                         .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                         .padding(.bottom, 20)

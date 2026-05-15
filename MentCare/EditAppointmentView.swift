@@ -41,6 +41,6 @@ struct EditAppointmentView: View {
                 }
             }
         }
-        .frame(minWidth: 400, minHeight: 500) // Mac'te formun güzel görünmesi için
+        .frame(minWidth: 400, minHeight: 500) 
     }
 }

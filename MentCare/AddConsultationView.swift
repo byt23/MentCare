@@ -24,13 +24,10 @@ struct AddConsultationView: View {
         NavigationStack {
             Form {
                 Section(header: Text("Clinical Details")) {
-                    
-                    // YENİ: Akıllı ICD-10 Teşhis Asistanı
                     VStack(alignment: .leading, spacing: 0) {
                         TextField("Search Diagnostic Code or Name...", text: $diagnosticCode)
                             .textFieldStyle(.roundedBorder)
-                        
-                        // Arama sonuçları listesi
+
                         let searchResults = ClinicalDatabase.searchICD10(query: diagnosticCode)
                         
                         if !searchResults.isEmpty && !ClinicalDatabase.icd10Codes.keys.contains(diagnosticCode) {
@@ -52,7 +49,6 @@ struct AddConsultationView: View {
                                         Divider()
                                     }
                                 }
-                                // HATA ÇÖZÜLDÜ: Platforma özel renk kontrolü
                                 .background(platformBackgroundColor)
                                 .cornerRadius(8)
                                 .shadow(radius: 2)
@@ -139,9 +135,6 @@ struct AddConsultationView: View {
         }
     }
     
-    // MARK: - Platform Yardımcıları
-    
-    // Hata veren NSColor yerine bunu kullanıyoruz:
     private var platformBackgroundColor: Color {
         #if os(macOS)
         return Color(NSColor.controlBackgroundColor)

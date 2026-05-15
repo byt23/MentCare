@@ -8,6 +8,9 @@
 #if canImport(AppKit)
 import AppKit
 #endif
+#if canImport(UIKit)
+import UIKit
+#endif
 import SwiftUI
 import SwiftData
 
@@ -19,6 +22,8 @@ struct PatientDetailView: View {
     @State private var isShowingAddConsultation = false
     @State private var selectedConsultationForPrescription: Consultation?
     @State private var isShowingAddAppointment = false
+    @State private var pdfURL: URL?
+    @State private var isSharing = false
     
     var body: some View {
         Form {
@@ -60,23 +65,18 @@ struct PatientDetailView: View {
                 }
             }
 
-            // YENİ: Görsel Hasta Yolculuğu (Timeline) Bölümü
             Section(header: Text("Patient Journey")) {
-                // 1. Yeni Randevu Butonu
                 Button(action: { isShowingAddAppointment = true }) {
                     Label("Schedule Follow-up Appointment", systemImage: "calendar")
                         .foregroundColor(.blue)
                 }
                 
-                // 2. YENİ ŞIK TİMELİNE BİLEŞENİ
                 if let consultations = patient.consultations {
                     ConsultationTimelineView(consultations: consultations)
-                        // Liste stili yerine kartların tam görünmesi için arka planı temizliyoruz
                         .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                         .listRowBackground(Color.clear)
                 }
                 
-                // 3. Yeni Not Butonu
                 Button(action: { isShowingAddConsultation = true }) {
                     Label("Add New Consultation Note", systemImage: "plus.circle.fill")
                         .foregroundColor(.purple)
@@ -86,19 +86,24 @@ struct PatientDetailView: View {
         .navigationTitle("Profile: \(patient.patientID)")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    saveAndSync()
-                }) {
+                Button(action: saveAndSync) {
                     Label("Save & Sync", systemImage: "arrow.triangle.2.circlepath")
                 }
             }
             
             ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    exportPDF()
-                }) {
+                Button(action: exportPDF) {
                     Label("Export PDF", systemImage: "doc.text.fill")
                 }
+            }
+        }
+        .sheet(isPresented: $isSharing) {
+            if let url = pdfURL {
+                #if os(iOS)
+                ShareSheet(activityItems: [url])
+                #else
+                EmptyView()
+                #endif
             }
         }
         .sheet(isPresented: $isShowingAddConsultation) {
@@ -114,27 +119,28 @@ struct PatientDetailView: View {
     
     @MainActor
     private func exportPDF() {
-        let pdfView = PatientPDFView(patient: patient)
-        let renderer = ImageRenderer(content: pdfView)
+        let latest = patient.consultations?.sorted(by: { $0.consultationDate > $1.consultationDate }).first
+        let reportView = OfficialReportView(patient: patient, latestConsultation: latest)
+        let renderer = ImageRenderer(content: reportView)
+        renderer.proposedSize = .init(width: 595, height: 842)
+        
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(patient.patientID)_Report.pdf")
+        
         renderer.render { size, context in
             var box = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-            guard let pdf = CGContext(url as CFURL, mediaBox: &box, nil) else {
-                print("❌ PDF çizim motoru başlatılamadı.")
-                return
-            }
-            
+            guard let pdf = CGContext(url as CFURL, mediaBox: &box, nil) else { return }
             pdf.beginPDFPage(nil)
             context(pdf)
             pdf.endPDFPage()
             pdf.closePDF()
         }
-        print("✅ PDF Başarıyla Oluşturuldu!")
-        print("📁 Dosya Konumu: \(url.path)")
+        
+        self.pdfURL = url
+        
         #if os(macOS)
         NSWorkspace.shared.open(url)
         #else
-        openURL(url)
+        self.isSharing = true
         #endif
     }
     
@@ -143,3 +149,19 @@ struct PatientDetailView: View {
         SyncService().syncPatientsToCloud(patients: [patient])
     }
 }
+
+#if os(iOS)
+struct ShareSheet: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        if let popover = controller.popoverPresentationController {
+            popover.sourceView = UIView()
+        }
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+#endif

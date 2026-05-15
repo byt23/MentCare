@@ -9,14 +9,13 @@ import SwiftUI
 import SwiftData
 
 enum MenuCategory: Hashable {
-    case dashboard, patients, calendar, prescriptions, reports
+    case dashboard, patients, calendar, prescriptions, reports, logout
 }
 
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthManager
     @State private var selectedMenu: MenuCategory? = .dashboard
     
-    // Multiplatform için cihaz tipini kontrol ediyoruz
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
@@ -24,7 +23,6 @@ struct ContentView: View {
     var body: some View {
         let currentAuth = authManager
         
-        // iPhone ise ve dikey moddaysa TabView (Alt Menü) göster
         #if os(iOS)
         if horizontalSizeClass == .compact {
             tabBarLayout(currentAuth: currentAuth)
@@ -32,12 +30,10 @@ struct ContentView: View {
             sidebarLayout(currentAuth: currentAuth)
         }
         #else
-        // macOS ise her zaman Sidebar düzenini kullan
         sidebarLayout(currentAuth: currentAuth)
         #endif
     }
     
-    // MARK: - Geniş Ekran (Mac/iPad) Düzeni
     @ViewBuilder
     private func sidebarLayout(currentAuth: AuthManager) -> some View {
         NavigationSplitView {
@@ -53,7 +49,6 @@ struct ContentView: View {
         }
     }
     
-    // MARK: - Dar Ekran (iPhone) Düzeni
     @ViewBuilder
     private func tabBarLayout(currentAuth: AuthManager) -> some View {
         TabView(selection: $selectedMenu) {
@@ -69,16 +64,24 @@ struct ContentView: View {
                 .tabItem { Label("Calendar", systemImage: "calendar") }
                 .tag(MenuCategory.calendar)
             
-            // Reçete Yönetimi (Sadece Doktor)
             if currentAuth.currentUserRole == "Doctor" {
                 Text("Prescriptions Area")
                     .tabItem { Label("Med", systemImage: "pills.fill") }
                     .tag(MenuCategory.prescriptions)
             }
+            
+            // iPhone için Logout Sekmesi
+            Color.clear
+                .tabItem { Label("Logout", systemImage: "rectangle.portrait.and.arrow.right") }
+                .tag(MenuCategory.logout)
+        }
+        .onChange(of: selectedMenu) { oldValue, newValue in
+            if newValue == .logout {
+                currentAuth.logout()
+            }
         }
     }
     
-    // MARK: - Ortak Bileşenler
     @ViewBuilder
     private func navigationLinks(currentAuth: AuthManager) -> some View {
         NavigationLink(value: MenuCategory.dashboard) {
@@ -120,6 +123,8 @@ struct ContentView: View {
                 Text("Management Dashboard").font(.title)
                 Text("Admin Access: Confirmed").foregroundColor(.secondary)
             }
+        case .logout: // Logout durumu için boş görünüm
+            Text("Logging out...")
         case .none:
             Text("Select a module to continue").foregroundColor(.secondary)
         }

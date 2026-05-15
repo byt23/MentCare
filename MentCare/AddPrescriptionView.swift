@@ -11,16 +11,13 @@ import SwiftData
 struct AddPrescriptionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    
     var consultation: Consultation
-    
-    // Orijinal değişkenler
     @State private var drugName = ""
     @State private var dosageAmount = ""
     @State private var adminFrequency = ""
     @State private var cost: Double = 0.0
     
-    // Yapay Zeka ve Kontrol Değişkenleri
+
     @State private var interactionWarning: String? = nil
     @State private var dosageWarning: String? = nil
     
@@ -31,7 +28,6 @@ struct AddPrescriptionView: View {
                     TextField("Drug Name", text: $drugName)
                         .onChange(of: drugName) { _, newValue in
                             checkForInteractions(newDrug: newValue)
-                            // İlaç adı değiştiğinde dozu da tekrar kontrol et
                             withAnimation {
                                 dosageWarning = ClinicalDatabase.validateDosage(for: newValue, dosageString: dosageAmount)
                             }
@@ -45,8 +41,6 @@ struct AddPrescriptionView: View {
                         }
                     TextField("Frequency (e.g. Twice a day)", text: $adminFrequency)
                 }
-                
-                // İlaç Etkileşim Uyarısı (Kırmızı)
                 if let warning = interactionWarning {
                     Section {
                         HStack {
@@ -61,8 +55,6 @@ struct AddPrescriptionView: View {
                         .listRowBackground(Color.red)
                     }
                 }
-                
-                // Doz Aşımı (Overdose) Uyarısı (Turuncu)
                 if let warning = dosageWarning {
                     Section {
                         HStack {
@@ -77,8 +69,6 @@ struct AddPrescriptionView: View {
                         .listRowBackground(Color.orange)
                     }
                 }
-                
-                // Finansal Detaylar
                 Section(header: Text("Financials")) {
                     HStack {
                         Text("$")
@@ -108,14 +98,12 @@ struct AddPrescriptionView: View {
                         modelContext.insert(newPrescription)
                         dismiss()
                     }
-                    // KAYDET BUTONU KİLİDİ: İsim/Doz boşsa VEYA herhangi bir uyarı varsa kilitlenir
                     .disabled(drugName.isEmpty || dosageAmount.isEmpty || interactionWarning != nil || dosageWarning != nil)
                 }
             }
         }
     }
     
-    // Etkileşim Kontrol Fonksiyonu
     private func checkForInteractions(newDrug: String) {
         var currentDrugs: [String] = []
         

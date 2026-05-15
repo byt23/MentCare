@@ -40,7 +40,6 @@ struct PatientListView: View {
                 .padding(.top, 5)
                 
                 List {
-                    // YENİ: Artık 'patients' yerine 'filteredPatients' kullanıyoruz
                     ForEach(filteredPatients) { patient in
                         NavigationLink(destination: PatientDetailView(patient: patient)) {
                             HStack {

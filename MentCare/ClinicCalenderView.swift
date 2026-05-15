@@ -1,5 +1,5 @@
 //
-//  ClinicCalenderView.swift
+//  ClinicCalendarView.swift
 //  MentCare
 //
 //  Created by BERKAY TURAN on 15.05.2026.
@@ -49,10 +49,13 @@ struct ClinicCalendarView: View {
             #else
             VStack(spacing: 0) {
                 calendarSidebar
-                    .frame(maxHeight: 400)
+                    .padding(.bottom, 10)
+                
                 Divider()
+                
                 appointmentMainList
             }
+            .background(Color.customWindowBackground)
             #endif
         }
         .navigationTitle("Schedule")
@@ -65,22 +68,24 @@ struct ClinicCalendarView: View {
     }
     
     private var calendarSidebar: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 15) {
+            #if os(macOS)
             Text("Clinic Calendar")
                 .font(.title2).bold()
                 .padding(.top)
+            #endif
             
-            DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
+            DatePicker("", selection: $selectedDate, displayedComponents: [.date])
                 .datePickerStyle(.graphical)
                 .accentColor(.purple)
-                .padding()
+                .padding(10)
                 .background(Color.customControlBackground.opacity(0.6))
-                .cornerRadius(16)
+                .cornerRadius(20)
                 .padding(.horizontal)
             
-            HStack(spacing: 15) {
-                statBox(title: "Total", count: allAppointments.count, icon: "archivebox.fill", color: .blue)
-                statBox(title: "Pending", count: allAppointments.filter {!$0.isCompleted}.count, icon: "clock.fill", color: .orange)
+            HStack(spacing: 12) {
+                miniStat(title: "Total", count: allAppointments.count, color: .blue)
+                miniStat(title: "Pending", count: allAppointments.filter {!$0.isCompleted}.count, color: .orange)
             }
             .padding(.horizontal)
             
@@ -96,11 +101,11 @@ struct ClinicCalendarView: View {
     private var appointmentMainList: some View {
         VStack(spacing: 0) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(selectedDate.formatted(date: .complete, time: .omitted))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(selectedDate.formatted(date: .abbreviated, time: .omitted))
                         .font(.headline)
-                    Text("\(filteredAppointments.count) appointments found")
-                        .font(.subheadline).foregroundColor(.secondary)
+                    Text("\(filteredAppointments.count) sessions found")
+                        .font(.caption).foregroundColor(.secondary)
                 }
                 Spacer()
                 
@@ -111,39 +116,52 @@ struct ClinicCalendarView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding()
-            .background(Color.customWindowBackground)
-            
-            Divider()
+            .padding(.horizontal, 20)
+            .padding(.vertical, 15)
             
             List {
                 if filteredAppointments.isEmpty {
-                    ContentUnavailableView("No Sessions", systemImage: "calendar.badge.plus")
+                    VStack(spacing: 15) {
+                        Spacer().frame(height: 40)
+                        Image(systemName: "calendar.badge.plus")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.quaternary)
+                        Text("No Sessions Scheduled")
+                            .font(.subheadline).bold()
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 } else {
                     ForEach(filteredAppointments) { appt in
                         AppointmentRow(appointment: appt) {
                             editingAppointment = appt
                         }
-                        .listRowInsets(EdgeInsets(top: 8, leading: 15, bottom: 8, trailing: 15))
+                        .listRowInsets(EdgeInsets(top: 6, leading: 15, bottom: 6, trailing: 15))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                     }
                 }
             }
             .listStyle(.plain)
+            #if os(iOS)
+            .padding(.bottom, 80)
+            #endif
         }
     }
     
-    private func statBox(title: String, count: Int, icon: String, color: Color) -> some View {
-        VStack(alignment: .leading) {
-            Image(systemName: icon).foregroundColor(color)
-            Text("\(count)").font(.headline).bold()
+    private func miniStat(title: String, count: Int, color: Color) -> some View {
+        HStack(spacing: 6) {
+            Circle().fill(color).frame(width: 8, height: 8)
             Text(title).font(.caption).foregroundColor(.secondary)
+            Text("\(count)").font(.caption).bold()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(Color.customControlBackground.opacity(0.5))
-        .cornerRadius(12)
+        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
+        .background(Color.customControlBackground)
+        .cornerRadius(20)
     }
 }
 
@@ -156,7 +174,7 @@ struct AppointmentRow: View {
         HStack(spacing: 0) {
             Rectangle()
                 .fill(appointment.isCompleted ? Color.gray : Color.purple)
-                .frame(width: 5)
+                .frame(width: 4)
             
             HStack(spacing: 15) {
                 VStack {
@@ -185,6 +203,7 @@ struct AppointmentRow: View {
         }
         .background(Color.customControlBackground)
         .cornerRadius(12)
+        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
         .onTapGesture { onEdit() }
     }
 }

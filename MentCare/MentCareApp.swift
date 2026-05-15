@@ -30,6 +30,13 @@ struct MentCareApp: App {
             .animation(.default, value: authManager.isAuthenticated)
             
         }
-        .modelContainer(for: [Patient.self, Prescription.self, Consultation.self, MedicalStaff.self])
+        // GÜNCELLEME: Appointment.self modelini listeye ekledik
+        .modelContainer(for: [
+            Patient.self,
+            Appointment.self, // Eksik olan model buydu
+            Prescription.self,
+            Consultation.self,
+            MedicalStaff.self
+        ])
     }
 }
