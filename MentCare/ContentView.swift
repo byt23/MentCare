@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 enum MenuCategory: Hashable {
-    case dashboard, patients, prescriptions, reports
+    case dashboard, patients, calendar, prescriptions, reports
 }
 
 struct ContentView: View {
@@ -27,6 +27,10 @@ struct ContentView: View {
                 
                 NavigationLink(value: MenuCategory.patients) {
                     Label("Patients", systemImage: "person.2.fill")
+                }
+                
+                NavigationLink(value: MenuCategory.calendar) {
+                    Label("Clinic Calendar", systemImage: "calendar")
                 }
                 
                 if currentAuth.currentUserRole == "Doctor" {
@@ -77,6 +81,8 @@ struct ContentView: View {
                 DashboardView()
             case .patients:
                 PatientListView()
+            case .calendar: 
+                ClinicCalendarView()
             case .prescriptions:
                 VStack {
                     Image(systemName: "pills.fill")
@@ -104,6 +110,7 @@ struct ContentView: View {
         }
     }
 }
+
 #Preview {
     ContentView()
         .environmentObject(AuthManager())

@@ -60,46 +60,26 @@ struct PatientDetailView: View {
                 }
             }
 
-            Section(header: Text("Consultation History")) {
-                Section {
-                    Button(action: { isShowingAddAppointment = true }) {
-                        Label("Schedule Follow-up Appointment", systemImage: "calendar")
-                    }
-                }
-                if let consultations = patient.consultations, !consultations.isEmpty {
-                    ForEach(consultations) { consultation in
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text(consultation.consultationDate, style: .date)
-                                    .font(.headline)
-                                Spacer()
-                                Text("Code: \(consultation.diagnosticCode)")
-                                    .font(.caption)
-                                    .padding(4)
-                                    .background(Color.blue.opacity(0.2))
-                                    .cornerRadius(4)
-                            }
-                            Text(consultation.clinicalNotes)
-                                .font(.subheadline)
-                                .lineLimit(3)
-                            
-                            Button(action: {
-                                selectedConsultationForPrescription = consultation
-                            }) {
-                                Label("Add Prescription", systemImage: "pills")
-                                    .font(.caption)
-                            }
-                            .buttonStyle(.borderless)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                } else {
-                    Text("No consultations on record.")
-                        .foregroundColor(.secondary)
+            // YENİ: Görsel Hasta Yolculuğu (Timeline) Bölümü
+            Section(header: Text("Patient Journey")) {
+                // 1. Yeni Randevu Butonu
+                Button(action: { isShowingAddAppointment = true }) {
+                    Label("Schedule Follow-up Appointment", systemImage: "calendar")
+                        .foregroundColor(.blue)
                 }
                 
+                // 2. YENİ ŞIK TİMELİNE BİLEŞENİ
+                if let consultations = patient.consultations {
+                    ConsultationTimelineView(consultations: consultations)
+                        // Liste stili yerine kartların tam görünmesi için arka planı temizliyoruz
+                        .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                        .listRowBackground(Color.clear)
+                }
+                
+                // 3. Yeni Not Butonu
                 Button(action: { isShowingAddConsultation = true }) {
                     Label("Add New Consultation Note", systemImage: "plus.circle.fill")
+                        .foregroundColor(.purple)
                 }
             }
         }
