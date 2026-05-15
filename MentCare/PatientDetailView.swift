@@ -5,19 +5,21 @@
 //  Created by BERKAY TURAN on 14.05.2026.
 //
 
+#if canImport(AppKit)
+import AppKit
+#endif
 import SwiftUI
 import SwiftData
 
 struct PatientDetailView: View {
     @Bindable var patient: Patient
     @Environment(\.modelContext) private var modelContext
-    
+    @Environment(\.openURL) private var openURL
     @State private var isShowingAddConsultation = false
     @State private var selectedConsultationForPrescription: Consultation?
     
     var body: some View {
         Form {
-            // Kritik Uyarı Bölümü
             if patient.warningFlag == "Suicidal" || patient.warningFlag == "Aggressive" {
                 Section {
                     HStack {
@@ -43,7 +45,6 @@ struct PatientDetailView: View {
                 }
             }
             
-            // Demografik Bilgiler (Düzenlenebilir)
             Section(header: Text("Demographics")) {
                 TextField("Patient ID", text: $patient.patientID)
                 TextField("Demographics", text: $patient.demographicData)
@@ -56,8 +57,7 @@ struct PatientDetailView: View {
                     Text("Aggressive").tag("Aggressive")
                 }
             }
-            
-            // Konsültasyon Geçmişi
+
             Section(header: Text("Consultation History")) {
                 if let consultations = patient.consultations, !consultations.isEmpty {
                     ForEach(consultations) { consultation in
@@ -98,8 +98,20 @@ struct PatientDetailView: View {
         }
         .navigationTitle("Profile: \(patient.patientID)")
         .toolbar {
-            Button("Save & Sync") {
-                saveAndSync()
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: {
+                    saveAndSync()
+                }) {
+                    Label("Save & Sync", systemImage: "arrow.triangle.2.circlepath")
+                }
+            }
+            
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    exportPDF()
+                }) {
+                    Label("Export PDF", systemImage: "doc.text.fill")
+                }
             }
         }
         .sheet(isPresented: $isShowingAddConsultation) {
@@ -110,10 +122,34 @@ struct PatientDetailView: View {
         }
     }
     
-    // Değişiklikleri hem yerel SwiftData'ya hem Firebase'e gönderir
+    @MainActor
+    private func exportPDF() {
+        let pdfView = PatientPDFView(patient: patient)
+        let renderer = ImageRenderer(content: pdfView)
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(patient.patientID)_Report.pdf")
+        renderer.render { size, context in
+            var box = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+            guard let pdf = CGContext(url as CFURL, mediaBox: &box, nil) else {
+                print("❌ PDF çizim motoru başlatılamadı.")
+                return
+            }
+            
+            pdf.beginPDFPage(nil)
+            context(pdf)
+            pdf.endPDFPage()
+            pdf.closePDF()
+        }
+        print("✅ PDF Başarıyla Oluşturuldu!")
+        print("📁 Dosya Konumu: \(url.path)")
+        #if os(macOS)
+        NSWorkspace.shared.open(url)
+        #else
+        openURL(url)
+        #endif
+    }
+    
     private func saveAndSync() {
         try? modelContext.save()
-        // Tekil güncellemeyi tetiklemek için SyncService'i çağırıyoruz
         SyncService().syncPatientsToCloud(patients: [patient])
     }
 }
