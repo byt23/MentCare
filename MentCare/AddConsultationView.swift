@@ -5,13 +5,6 @@
 //  Created by BERKAY TURAN on 14.05.2026.
 //
 
-//
-//  AddConsultationView.swift
-//  MentCare
-//
-//  Created by BERKAY TURAN on 14.05.2026.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -45,7 +38,6 @@ struct AddConsultationView: View {
                                 VStack(alignment: .leading) {
                                     ForEach(searchResults.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
                                         Button(action: {
-                                            // Tıklanınca kodu otomatik doldurur
                                             diagnosticCode = key
                                         }) {
                                             HStack {
@@ -60,16 +52,16 @@ struct AddConsultationView: View {
                                         Divider()
                                     }
                                 }
-                                .background(Color(NSColor.controlBackgroundColor)) // Mac'e uygun arka plan
+                                // HATA ÇÖZÜLDÜ: Platforma özel renk kontrolü
+                                .background(platformBackgroundColor)
                                 .cornerRadius(8)
                                 .shadow(radius: 2)
                             }
-                            .frame(maxHeight: 150) // Liste çok uzamasın diye sınır
+                            .frame(maxHeight: 150)
                         }
                     }
                     .padding(.bottom, 10)
                     
-                    // Klinik Notlar ve Yapay Zeka Analizi
                     VStack(alignment: .leading) {
                         Text("Clinical Notes")
                             .font(.caption)
@@ -93,7 +85,6 @@ struct AddConsultationView: View {
                     }
                 }
 
-                // Yapay Zeka Sonuç Ekranı
                 if isAIAnalyzed {
                     Section("AI Assessment") {
                         HStack {
@@ -115,7 +106,6 @@ struct AddConsultationView: View {
                     }
                 }
                 
-                // Kimlik Doğrulama
                 Section(header: Text("Authentication")) {
                 #if os(iOS)
                     TextField("Doctor Signature Code", text: $signatureCode)
@@ -141,13 +131,23 @@ struct AddConsultationView: View {
                         newConsultation.patient = patient
                         modelContext.insert(newConsultation)
                         SyncService().syncPatientsToCloud(patients: [patient])
-                        
                         dismiss()
                     }
                     .disabled(signatureCode.isEmpty || diagnosticCode.isEmpty)
                 }
             }
         }
+    }
+    
+    // MARK: - Platform Yardımcıları
+    
+    // Hata veren NSColor yerine bunu kullanıyoruz:
+    private var platformBackgroundColor: Color {
+        #if os(macOS)
+        return Color(NSColor.controlBackgroundColor)
+        #else
+        return Color(UIColor.secondarySystemBackground)
+        #endif
     }
     
     private func runAIAnalysis() {

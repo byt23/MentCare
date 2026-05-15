@@ -13,6 +13,14 @@ struct ConsultationTimelineView: View {
     var sortedConsultations: [Consultation] {
         consultations.sorted { $0.consultationDate > $1.consultationDate }
     }
+
+    private var platformBackground: Color {
+        #if os(macOS)
+        return Color(NSColor.controlBackgroundColor)
+        #else
+        return Color(UIColor.secondarySystemBackground)
+        #endif
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -24,7 +32,7 @@ struct ConsultationTimelineView: View {
                 ForEach(Array(sortedConsultations.enumerated()), id: \.element.id) { index, consultation in
                     HStack(alignment: .top, spacing: 15) {
                         
-                     
+                        // SOL TARAF: Timeline Çizgisi
                         VStack(spacing: 0) {
                             Circle()
                                 .fill(LinearGradient(colors: [.blue, .purple], startPoint: .top, endPoint: .bottom))
@@ -39,6 +47,7 @@ struct ConsultationTimelineView: View {
                             }
                         }
                         
+                        // SAĞ TARAF: Konsültasyon Kartı
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 Text(consultation.consultationDate, style: .date)
@@ -73,7 +82,7 @@ struct ConsultationTimelineView: View {
                             }
                         }
                         .padding()
-                        .background(Color(NSColor.controlBackgroundColor))
+                        .background(platformBackground) // HATA ÇÖZÜLDÜ
                         .cornerRadius(12)
                         .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                         .padding(.bottom, 20)
