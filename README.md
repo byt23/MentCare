@@ -1,11 +1,5 @@
 # 🏥 MentCare: AI-Powered Clinical Assistant
 
----
-
-## 🌐 Language / Dil
-
-* [English](https://www.google.com/search?q=%23-english)
-* [Türkçe](https://www.google.com/search?q=%23-t%C3%BCrk%C3%A7e)
 
 ---
 
