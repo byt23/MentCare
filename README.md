@@ -56,6 +56,6 @@
 ---
 ## 👨‍💻 Developer
 
-**Berkay Yaşar Turan** *Computer Engineering Student & Software Developer* [LinkedIn](https://www.google.com/search?q=https://www.linkedin.com/in/berkayturan) | [GitHub](https://www.google.com/search?q=https://github.com/byt23)
+**Berkay Yaşar Turan** *Computer Engineering Student & Software Developer* 
 
 ---
