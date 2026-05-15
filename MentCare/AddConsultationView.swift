@@ -17,6 +17,8 @@ struct AddConsultationView: View {
     @State private var clinicalNotes = ""
     @State private var diagnosticCode = ""
     @State private var signatureCode = ""
+    @State private var suggestedFlag = "Normal"
+    @State private var isAIAnalyzed = false
     
     var body: some View {
         NavigationStack {
@@ -30,6 +32,40 @@ struct AddConsultationView: View {
                             .foregroundColor(.secondary)
                         TextEditor(text: $clinicalNotes)
                             .frame(minHeight: 120)
+                        Button(action: runAIAnalysis) {
+                            HStack {
+                                Image(systemName: "sparkles")
+                                Text("AI Risk Analysis")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(clinicalNotes.isEmpty ? Color.gray : Color.purple)
+                            .cornerRadius(10)
+                        }
+                        .disabled(clinicalNotes.isEmpty)
+                        .padding(.top, 5)
+                    }
+                }
+
+                if isAIAnalyzed {
+                    Section("AI Assessment") {
+                        HStack {
+                            Text("Suggested Risk Level:")
+                            Spacer()
+                            Text(suggestedFlag)
+                                .bold()
+                                .foregroundColor(statusColor)
+                        }
+                        
+                        if suggestedFlag != "Normal" {
+                            Button("Apply Flag to Patient Profile") {
+                                patient.warningFlag = suggestedFlag
+                                try? modelContext.save()
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(statusColor)
+                        }
                     }
                 }
                 
@@ -55,14 +91,30 @@ struct AddConsultationView: View {
                             diagnosticCode: diagnosticCode,
                             signatureCode: signatureCode
                         )
-                        newConsultation.patient = patient // Hastaya bağlıyoruz
+                        newConsultation.patient = patient
                         modelContext.insert(newConsultation)
+                        SyncService().syncPatientsToCloud(patients: [patient])
+                        
                         dismiss()
                     }
-                    // Veri Doğrulama (Data Validation): İmza veya Teşhis kodu boşsa kayıt yapılamaz
                     .disabled(signatureCode.isEmpty || diagnosticCode.isEmpty)
                 }
             }
+        }
+    }
+    
+    private func runAIAnalysis() {
+        withAnimation {
+            suggestedFlag = AIService.analyzeRisk(from: clinicalNotes)
+            isAIAnalyzed = true
+        }
+    }
+
+    private var statusColor: Color {
+        switch suggestedFlag {
+        case "Suicidal": return .red
+        case "Aggressive": return .orange
+        default: return .green
         }
     }
 }

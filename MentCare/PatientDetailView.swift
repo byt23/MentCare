@@ -15,8 +15,10 @@ struct PatientDetailView: View {
     @Bindable var patient: Patient
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
+    
     @State private var isShowingAddConsultation = false
     @State private var selectedConsultationForPrescription: Consultation?
+    @State private var isShowingAddAppointment = false
     
     var body: some View {
         Form {
@@ -59,6 +61,11 @@ struct PatientDetailView: View {
             }
 
             Section(header: Text("Consultation History")) {
+                Section {
+                    Button(action: { isShowingAddAppointment = true }) {
+                        Label("Schedule Follow-up Appointment", systemImage: "calendar")
+                    }
+                }
                 if let consultations = patient.consultations, !consultations.isEmpty {
                     ForEach(consultations) { consultation in
                         VStack(alignment: .leading, spacing: 8) {
@@ -119,6 +126,10 @@ struct PatientDetailView: View {
         }
         .sheet(item: $selectedConsultationForPrescription) { consultation in
             AddPrescriptionView(consultation: consultation)
+        }
+        // EKSİK OLAN KISIM BURASIYDI: Randevu ekranını açacak tetikleyici eklendi
+        .sheet(isPresented: $isShowingAddAppointment) {
+            AddAppointmentView(patient: patient)
         }
     }
     
