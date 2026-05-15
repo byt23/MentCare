@@ -25,7 +25,6 @@ struct AddAppointmentView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 25) {
-                    // 1. ŞIK BAŞLIK ALANI
                     VStack(spacing: 12) {
                         ZStack {
                             Circle()
@@ -44,8 +43,6 @@ struct AddAppointmentView: View {
                             .foregroundColor(.secondary)
                     }
                     .padding(.top, 20)
-                    
-                    // 2. TARİH VE SAAT KARTI
                     VStack(alignment: .leading, spacing: 15) {
                         Label("Select Date & Time", systemImage: "clock.fill")
                             .font(.headline)
@@ -59,8 +56,6 @@ struct AddAppointmentView: View {
                     .cornerRadius(20)
                     .shadow(color: .black.opacity(0.08), radius: 15, x: 0, y: 8)
                     .padding(.horizontal)
-                    
-                    // 3. NOTLAR KARTI
                     VStack(alignment: .leading, spacing: 15) {
                         Label("Session Notes", systemImage: "note.text")
                             .font(.headline)
@@ -78,8 +73,6 @@ struct AddAppointmentView: View {
                     .padding(.horizontal)
                     
                     Spacer(minLength: 20)
-                    
-                    // 4. ANİMASYONLU KAYDET BUTONU (SWIFTDATA'YA KAYDEDER)
                     Button(action: saveToInternalDatabase) {
                         HStack {
                             Spacer()
@@ -114,16 +107,12 @@ struct AddAppointmentView: View {
             }
         }
     }
-    
-    // YENİ KAYIT MANTIĞI: SwiftData'ya yazar
     private func saveToInternalDatabase() {
         let newAppointment = Appointment(appointmentDate: appointmentDate, notes: appointmentNotes)
-        newAppointment.patient = patient // Hastaya bağla
+        newAppointment.patient = patient
         
         modelContext.insert(newAppointment)
         try? modelContext.save()
-        
-        // Bulut senkronizasyonunu tetikle
         SyncService().syncPatientsToCloud(patients: [patient])
         
         withAnimation {

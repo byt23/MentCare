@@ -22,7 +22,6 @@ struct DashboardView: View {
                     .padding(.horizontal)
                 
                 HStack(spacing: 20) {
-                    // 1. RISK DAĞILIMI (PIE/SECTOR CHART)
                     VStack(alignment: .leading) {
                         Text("Risk Distribution").font(.headline)
                         Chart(riskData, id: \.type) { data in
@@ -45,7 +44,6 @@ struct DashboardView: View {
                     .background(.ultraThinMaterial)
                     .cornerRadius(20)
                     
-                    // 2. RANDEVU YOĞUNLUĞU (BAR CHART)
                     VStack(alignment: .leading) {
                         Text("Daily Schedule").font(.headline)
                         Chart(appointmentTrends, id: \.day) { data in
@@ -75,7 +73,6 @@ struct DashboardView: View {
         }
     }
     
-    // Grafik Verisi Hazırlama (Computed Properties)
     private var riskData: [(type: String, count: Int)] {
         let normal = patients.filter { $0.warningFlag == "Normal" }.count
         let suicidal = patients.filter { $0.warningFlag == "Suicidal" }.count
@@ -84,7 +81,6 @@ struct DashboardView: View {
     }
     
     private var appointmentTrends: [(day: String, count: Int)] {
-        // Son 7 günün randevu sayılarını hesaplar
         let formatter = DateFormatter()
         formatter.dateFormat = "E"
         return (0..<7).map { i in

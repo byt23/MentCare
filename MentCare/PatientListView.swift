@@ -12,20 +12,14 @@ struct PatientListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Patient.patientID) private var patients: [Patient]
     @State private var isShowingSheet = false
-    
-    // YENİ: Arama ve Filtreleme için State Değişkenleri
     @State private var searchText = ""
-    @State private var selectedFilter = "All" // Seçenekler: "All", "Normal", "Suicidal", "Aggressive"
-    
-    // YENİ: Arama ve filtrelemeyi aynı anda uygulayan akıllı liste
+    @State private var selectedFilter = "All"
     var filteredPatients: [Patient] {
         patients.filter { patient in
-            // 1. Arama Çubuğu Kontrolü (İsim veya ID'de geçiyorsa)
             let matchesSearch = searchText.isEmpty ||
                                 patient.demographicData.localizedCaseInsensitiveContains(searchText) ||
                                 patient.patientID.localizedCaseInsensitiveContains(searchText)
             
-            // 2. Kategori Filtresi Kontrolü
             let matchesFilter = selectedFilter == "All" || patient.warningFlag == selectedFilter
             
             return matchesSearch && matchesFilter
@@ -35,7 +29,6 @@ struct PatientListView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // YENİ: Hızlı Filtreleme Butonları
                 Picker("Filter Status", selection: $selectedFilter) {
                     Text("All Patients").tag("All")
                     Text("Normal").tag("Normal")
@@ -73,7 +66,6 @@ struct PatientListView: View {
                 }
             }
             .navigationTitle("Records")
-            // YENİ: SwiftUI'ın yerleşik arama çubuğu
             .searchable(text: $searchText, prompt: "Search by Name or TC/ID")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -105,7 +97,6 @@ struct PatientListView: View {
     
     private func deletePatients(offsets: IndexSet) {
         for index in offsets {
-            // KRİTİK DÜZELTME: Doğru öğeyi silmek için filteredPatients kullanıyoruz
             let patientToDelete = filteredPatients[index]
             modelContext.delete(patientToDelete)
         }

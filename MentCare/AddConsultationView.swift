@@ -5,6 +5,13 @@
 //  Created by BERKAY TURAN on 14.05.2026.
 //
 
+//
+//  AddConsultationView.swift
+//  MentCare
+//
+//  Created by BERKAY TURAN on 14.05.2026.
+//
+
 import SwiftUI
 import SwiftData
 
@@ -24,14 +31,52 @@ struct AddConsultationView: View {
         NavigationStack {
             Form {
                 Section(header: Text("Clinical Details")) {
-                    TextField("Diagnostic Code (e.g. ICD-10)", text: $diagnosticCode)
                     
+                    // YENİ: Akıllı ICD-10 Teşhis Asistanı
+                    VStack(alignment: .leading, spacing: 0) {
+                        TextField("Search Diagnostic Code or Name...", text: $diagnosticCode)
+                            .textFieldStyle(.roundedBorder)
+                        
+                        // Arama sonuçları listesi
+                        let searchResults = ClinicalDatabase.searchICD10(query: diagnosticCode)
+                        
+                        if !searchResults.isEmpty && !ClinicalDatabase.icd10Codes.keys.contains(diagnosticCode) {
+                            ScrollView {
+                                VStack(alignment: .leading) {
+                                    ForEach(searchResults.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                                        Button(action: {
+                                            // Tıklanınca kodu otomatik doldurur
+                                            diagnosticCode = key
+                                        }) {
+                                            HStack {
+                                                Text(key).bold()
+                                                Text("- \(value)").foregroundColor(.secondary)
+                                                Spacer()
+                                            }
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 12)
+                                        }
+                                        .buttonStyle(.plain)
+                                        Divider()
+                                    }
+                                }
+                                .background(Color(NSColor.controlBackgroundColor)) // Mac'e uygun arka plan
+                                .cornerRadius(8)
+                                .shadow(radius: 2)
+                            }
+                            .frame(maxHeight: 150) // Liste çok uzamasın diye sınır
+                        }
+                    }
+                    .padding(.bottom, 10)
+                    
+                    // Klinik Notlar ve Yapay Zeka Analizi
                     VStack(alignment: .leading) {
                         Text("Clinical Notes")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         TextEditor(text: $clinicalNotes)
                             .frame(minHeight: 120)
+                        
                         Button(action: runAIAnalysis) {
                             HStack {
                                 Image(systemName: "sparkles")
@@ -48,6 +93,7 @@ struct AddConsultationView: View {
                     }
                 }
 
+                // Yapay Zeka Sonuç Ekranı
                 if isAIAnalyzed {
                     Section("AI Assessment") {
                         HStack {
@@ -69,6 +115,7 @@ struct AddConsultationView: View {
                     }
                 }
                 
+                // Kimlik Doğrulama
                 Section(header: Text("Authentication")) {
                 #if os(iOS)
                     TextField("Doctor Signature Code", text: $signatureCode)

@@ -10,10 +10,7 @@ import SwiftData
 
 struct ClinicCalendarView: View {
     @Environment(\.modelContext) private var modelContext
-    // Tüm randevuları en yakından en uzağa doğru sıralı çeker
     @Query(sort: \Appointment.appointmentDate) private var allAppointments: [Appointment]
-    
-    // Sadece gelecekteki randevuları filtrelemek için
     var upcomingAppointments: [Appointment] {
         allAppointments.filter { $0.appointmentDate >= Date() }
     }
@@ -30,7 +27,6 @@ struct ClinicCalendarView: View {
                 } else {
                     ForEach(upcomingAppointments) { appointment in
                         HStack(spacing: 15) {
-                            // Sol Taraf: Takvim İkonu ve Saat
                             VStack {
                                 Text(appointment.appointmentDate.formatted(.dateTime.month().day()))
                                     .font(.caption)
@@ -42,8 +38,6 @@ struct ClinicCalendarView: View {
                             .padding()
                             .background(Color.blue.opacity(0.1))
                             .cornerRadius(12)
-                            
-                            // Sağ Taraf: Hasta Bilgisi ve Notlar
                             VStack(alignment: .leading, spacing: 5) {
                                 Text(appointment.patient?.demographicData.components(separatedBy: " - ").first ?? "Unknown Patient")
                                     .font(.title3)
@@ -69,7 +63,6 @@ struct ClinicCalendarView: View {
             }
             .navigationTitle("Clinic Schedule")
             .overlay(alignment: .bottomTrailing) {
-                // Toplam randevu sayısını gösteren mini widget
                 if !upcomingAppointments.isEmpty {
                     Text("\(upcomingAppointments.count) Appointments")
                         .font(.caption).bold()

@@ -9,8 +9,6 @@ import SwiftUI
 
 struct PatientPDFView: View {
     var patient: Patient
-    
-    // Raporun alındığı anın tarihini oluşturur
     var currentDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -20,7 +18,6 @@ struct PatientPDFView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 25) {
-            // Rapor Başlığı ve Logo
             HStack {
                 Image(systemName: "cross.case.fill")
                     .font(.system(size: 40))
@@ -38,12 +35,10 @@ struct PatientPDFView: View {
             
             Divider()
             
-            // Tarih
             Text("Report Generated: \(currentDate)")
                 .font(.footnote)
                 .foregroundColor(.gray)
             
-            // Hastanın Temel Bilgileri
             VStack(alignment: .leading, spacing: 12) {
                 Text("Demographics & Identity")
                     .font(.title2)
@@ -59,7 +54,6 @@ struct PatientPDFView: View {
             .background(Color.blue.opacity(0.05))
             .cornerRadius(10)
             
-            // Tıbbi Uyarı ve Güvenlik Durumu
             VStack(alignment: .leading, spacing: 12) {
                 Text("Security & Risk Assessment")
                     .font(.title2)
@@ -81,8 +75,7 @@ struct PatientPDFView: View {
             Spacer()
             
             Divider()
-            
-            // Alt İmza (Geliştirici İmzası)
+
             HStack {
                 Text("Confidential Medical Record")
                     .font(.caption)
@@ -94,7 +87,7 @@ struct PatientPDFView: View {
             }
         }
         .padding(40)
-        .frame(width: 595, height: 842) // A4 Kağıt Standart Boyutu
+        .frame(width: 595, height: 842) 
         .background(Color.white)
     }
     

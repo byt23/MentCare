@@ -14,7 +14,7 @@ import Combine
 class AuthManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var currentUserRole = ""
-    @Published var currentStaffID = "" // Hata aldığın değişken burada
+    @Published var currentStaffID = ""
     
     init() {
         if let user = Auth.auth().currentUser {
@@ -42,7 +42,6 @@ class AuthManager: ObservableObject {
         }
     }
     
-    // Hata aldığın fonksiyon burada
     func logout() {
         do {
             try Auth.auth().signOut()

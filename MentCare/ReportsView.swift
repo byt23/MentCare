@@ -16,15 +16,12 @@ struct ReportsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // İstatistik Kartları
                     HStack(spacing: 10) {
                         ReportTile(title: "Stable", count: patients.filter{$0.warningFlag == "Normal"}.count, color: .green)
                         ReportTile(title: "Suicidal", count: patients.filter{$0.warningFlag == "Suicidal"}.count, color: .red)
                         ReportTile(title: "Aggressive", count: patients.filter{$0.warningFlag == "Aggressive"}.count, color: .orange)
                     }
                     .padding(.horizontal)
-                    
-                    // Gelişmiş Grafik
                     VStack(alignment: .leading) {
                         Text("Security Risk Distribution").font(.headline).padding([.leading, .top])
                         

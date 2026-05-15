@@ -14,8 +14,6 @@ final class Appointment {
     var appointmentDate: Date
     var notes: String
     var isCompleted: Bool
-    
-    // Hastayla olan ilişki
     var patient: Patient?
     
     init(appointmentDate: Date, notes: String, isCompleted: Bool = false) {

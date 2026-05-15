@@ -16,7 +16,6 @@ class Patient {
     var assignedClinic: String
     var warningFlag: String
     
-    // Mevcut Patient.swift dosyanın içine eklenecek satır:
     @Relationship(deleteRule: .cascade) var appointments: [Appointment]? = []
     var consultations: [Consultation]?
     

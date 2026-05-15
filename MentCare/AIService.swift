@@ -19,7 +19,6 @@ struct AIService {
             "swallow pills", "jump off", "pointless existence", "severe depression"
         ]
         
-        // Çevreye zarar verme, şiddet ve düşmanlık belirtileri
         let aggressiveKeywords = [
             "attack", "hurt someone", "kill him", "kill her", "kill them", "punch",
             "destroy", "revenge", "violent urge", "stab", "shoot", "smash", "murder",

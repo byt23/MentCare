@@ -14,30 +14,39 @@ struct AddPrescriptionView: View {
     
     var consultation: Consultation
     
-    // Senin orijinal değişkenlerin
+    // Orijinal değişkenler
     @State private var drugName = ""
     @State private var dosageAmount = ""
     @State private var adminFrequency = ""
     @State private var cost: Double = 0.0
     
-    // YENİ: Etkileşim uyarısını tutacak değişken
+    // Yapay Zeka ve Kontrol Değişkenleri
     @State private var interactionWarning: String? = nil
+    @State private var dosageWarning: String? = nil
     
     var body: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Medication Details")) {
                     TextField("Drug Name", text: $drugName)
-                        // YENİ: İlaç adı her değiştiğinde AI kontrolünü tetikler
                         .onChange(of: drugName) { _, newValue in
                             checkForInteractions(newDrug: newValue)
+                            // İlaç adı değiştiğinde dozu da tekrar kontrol et
+                            withAnimation {
+                                dosageWarning = ClinicalDatabase.validateDosage(for: newValue, dosageString: dosageAmount)
+                            }
                         }
                     
                     TextField("Dosage (e.g. 50mg)", text: $dosageAmount)
+                        .onChange(of: dosageAmount) { _, newValue in
+                            withAnimation {
+                                dosageWarning = ClinicalDatabase.validateDosage(for: drugName, dosageString: newValue)
+                            }
+                        }
                     TextField("Frequency (e.g. Twice a day)", text: $adminFrequency)
                 }
                 
-                // YENİ: Akıllı Etkileşim Uyarısı (Sadece çakışma varsa görünür)
+                // İlaç Etkileşim Uyarısı (Kırmızı)
                 if let warning = interactionWarning {
                     Section {
                         HStack {
@@ -49,11 +58,27 @@ struct AddPrescriptionView: View {
                         }
                         .foregroundColor(.white)
                         .padding()
-                        .listRowBackground(Color.red) // Bölümün arka planını kırmızı yapar
+                        .listRowBackground(Color.red)
                     }
                 }
                 
-                // Senin orijinal finansal detayların
+                // Doz Aşımı (Overdose) Uyarısı (Turuncu)
+                if let warning = dosageWarning {
+                    Section {
+                        HStack {
+                            Image(systemName: "exclamationmark.octagon.fill")
+                                .font(.title)
+                            Text(warning)
+                                .font(.subheadline)
+                                .bold()
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .listRowBackground(Color.orange)
+                    }
+                }
+                
+                // Finansal Detaylar
                 Section(header: Text("Financials")) {
                     HStack {
                         Text("$")
@@ -79,35 +104,29 @@ struct AddPrescriptionView: View {
                             adminFrequency: adminFrequency,
                             cost: cost
                         )
-                        newPrescription.consultation = consultation // Konsültasyona bağlıyoruz
+                        newPrescription.consultation = consultation
                         modelContext.insert(newPrescription)
                         dismiss()
                     }
-                    // YENİ: İlaç adı boşsa VEYA tehlikeli bir etkileşim varsa kaydetmeyi engelle
-                    .disabled(drugName.isEmpty || dosageAmount.isEmpty || interactionWarning != nil)
+                    // KAYDET BUTONU KİLİDİ: İsim/Doz boşsa VEYA herhangi bir uyarı varsa kilitlenir
+                    .disabled(drugName.isEmpty || dosageAmount.isEmpty || interactionWarning != nil || dosageWarning != nil)
                 }
             }
         }
     }
     
-    // YENİ: Girilen ilacın, konsültasyondaki diğer ilaçlarla çakışıp çakışmadığını kontrol eder
+    // Etkileşim Kontrol Fonksiyonu
     private func checkForInteractions(newDrug: String) {
-        // Konsültasyona daha önce eklenmiş reçeteler varsa onların isimlerini alıyoruz
-        // (Eğer Consultation modelinde 'prescriptions' dizisi yoksa, sadece yeni girilen ilacı kontrol eder)
         var currentDrugs: [String] = []
         
-        // SwiftData ilişkisinden dolayı consultation.prescriptions adında bir diziye sahip olduğunu varsayıyoruz
-        // Eğer modelinde bu dizinin adı farklıysa (örneğin 'medications'), aşağıyı ona göre güncelleyebilirsin.
         if let existingPrescriptions = consultation.prescriptions {
             currentDrugs = existingPrescriptions.map { $0.drugName }
         }
         
-        // Yeni yazılan ilacı da listeye ekliyoruz
         if !newDrug.isEmpty {
             currentDrugs.append(newDrug)
         }
         
-        // InteractionService'e gönderip sonucu alıyoruz
         withAnimation {
             interactionWarning = InteractionService.checkInteractions(for: currentDrugs)
         }

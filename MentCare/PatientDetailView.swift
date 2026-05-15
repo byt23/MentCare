@@ -127,7 +127,6 @@ struct PatientDetailView: View {
         .sheet(item: $selectedConsultationForPrescription) { consultation in
             AddPrescriptionView(consultation: consultation)
         }
-        // EKSİK OLAN KISIM BURASIYDI: Randevu ekranını açacak tetikleyici eklendi
         .sheet(isPresented: $isShowingAddAppointment) {
             AddAppointmentView(patient: patient)
         }

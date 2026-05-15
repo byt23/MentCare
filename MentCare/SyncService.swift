@@ -23,8 +23,7 @@ struct SyncService {
                 "warningFlag": patient.warningFlag,
                 "lastUpdated": FieldValue.serverTimestamp()
             ]
-            
-            // Veriyi Firestore'a ID bazlı gönderir
+
             db.collection("patients").document(patient.patientID).setData(patientData) { error in
                 if let error = error {
                     print("❌ Senkronizasyon Hatası: \(error.localizedDescription)")

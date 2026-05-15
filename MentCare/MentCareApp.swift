@@ -19,7 +19,6 @@ struct MentCareApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // .animation() ekleyerek geçişin takılmasını önleyelim
             Group {
                 if authManager.isAuthenticated {
                     ContentView()
@@ -28,7 +27,8 @@ struct MentCareApp: App {
                 }
             }
             .environmentObject(authManager)
-            .animation(.default, value: authManager.isAuthenticated) // Geçişi yumuşatır
+            .animation(.default, value: authManager.isAuthenticated)
+            
         }
         .modelContainer(for: [Patient.self, Prescription.self, Consultation.self, MedicalStaff.self])
     }

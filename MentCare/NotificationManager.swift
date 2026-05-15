@@ -22,8 +22,7 @@ class NotificationManager {
         content.title = "Upcoming Appointment"
         content.body = "Patient session starts in 15 minutes."
         content.sound = .default
-        
-        // Randevudan 15 dakika öncesine ayarla
+
         let triggerDate = Calendar.current.date(byAdding: .minute, value: -15, to: appointment.appointmentDate)!
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
         

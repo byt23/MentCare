@@ -11,8 +11,6 @@ import EventKit
 class CalendarService {
     static let shared = CalendarService()
     private let eventStore = EKEventStore()
-    
-    // Sadece takvime randevu ekleme yetkisi istiyoruz (iOS 17 / macOS 14 ve üzeri için en güvenlisi)
     func addAppointment(for patientName: String, date: Date, notes: String, completion: @escaping (Bool) -> Void) {
         eventStore.requestWriteOnlyAccessToEvents { (granted, error) in
             guard granted, error == nil else {
@@ -24,7 +22,7 @@ class CalendarService {
             let event = EKEvent(eventStore: self.eventStore)
             event.title = "MentCare: \(patientName) - Follow-up"
             event.startDate = date
-            event.endDate = date.addingTimeInterval(60 * 60) // Standart 1 saatlik seans
+            event.endDate = date.addingTimeInterval(60 * 60)
             event.notes = notes
             event.calendar = self.eventStore.defaultCalendarForNewEvents
             

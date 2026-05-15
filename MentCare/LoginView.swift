@@ -17,7 +17,6 @@ struct LoginView: View {
     
     var body: some View {
         ZStack {
-            // 1. Arka Plan: Modern Gradyan ve "Blur" (Bulanıklık) Efekti
             LinearGradient(colors: [Color.blue.opacity(0.3), Color.cyan.opacity(0.2)], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
             
@@ -33,10 +32,7 @@ struct LoginView: View {
                 .blur(radius: 80)
                 .offset(x: 200, y: 150)
             
-            // 2. Cam Efektli (Glassmorphism) Giriş Kartı
             VStack(spacing: 25) {
-                
-                // İkon: Tıbbi Haç ve Güvenlik Kalkanı
                 ZStack {
                     Image(systemName: "cross.fill")
                         .resizable()
@@ -52,8 +48,6 @@ struct LoginView: View {
                         .offset(x: 20, y: 20)
                 }
                 .padding(.bottom, 10)
-                
-                // Başlıklar
                 VStack(spacing: 5) {
                     Text("MentCare System")
                         .font(.title)
@@ -63,18 +57,14 @@ struct LoginView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                
-                // Hata Mesajı
                 if !errorMessage.isEmpty {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .font(.caption)
                         .multilineTextAlignment(.center)
                 }
-                
-                // Girdi Alanları
+
                 VStack(spacing: 15) {
-                    // Email Alanı
                     HStack {
                         Image(systemName: "person.fill")
                             .foregroundColor(.secondary)
@@ -93,8 +83,7 @@ struct LoginView: View {
                     .padding()
                     .background(Color.secondary.opacity(0.15))
                     .cornerRadius(10)
-                    
-                    // Şifre Alanı
+    
                     HStack {
                         Image(systemName: "lock.fill")
                             .foregroundColor(.secondary)
@@ -106,20 +95,17 @@ struct LoginView: View {
                     .padding()
                     .background(Color.secondary.opacity(0.15))
                     .cornerRadius(10)
-                    
-                    // Şifremi Unuttum Metni
+
                     HStack {
                         Spacer()
                         Button("Forgot PIN?") {
-                            // Şifre sıfırlama işlemi eklenecek
                         }
                         .font(.caption)
                         .foregroundColor(.blue)
-                        .buttonStyle(.plain) // Mac'te buton arka planını temizlemek için
+                        .buttonStyle(.plain)
                     }
                 }
-                
-                // Giriş Butonu
+
                 Button(action: performLogin) {
                     if isLoading {
                         ProgressView()
@@ -136,18 +122,17 @@ struct LoginView: View {
                 .cornerRadius(10)
                 .disabled(email.isEmpty || pin.isEmpty)
                 
-                // Alt Bilgi
                 Text("M4 Encrypted Connection Active")
                     .font(.system(size: 10))
                     .foregroundColor(.secondary)
                     .padding(.top, 10)
             }
             .padding(40)
-            // Asıl cam efektini veren sihirli kod:
+
             .background(.ultraThinMaterial)
             .cornerRadius(20)
             .shadow(color: .black.opacity(0.15), radius: 20, x: 0, y: 10)
-            .frame(maxWidth: 400) // Mac ve iPad'de çok genişlemesini engeller
+            .frame(maxWidth: 400)
             .padding()
         }
     }

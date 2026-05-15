@@ -12,7 +12,6 @@ struct AddPatientView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    // State değişkenleri - Tüm özellikler korundu
     @State private var name = ""
     @State private var tcNo = ""
     @State private var age = ""
@@ -22,13 +21,12 @@ struct AddPatientView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // Kimlik Bölümü
+                
                 Section("Patient Identity") {
                     TextField("Full Name", text: $name)
                     TextField("TC / ID Number", text: $tcNo)
                 }
                 
-                // Detaylar Bölümü
                 Section("Details") {
                     TextField("Age", text: $age)
                         #if os(iOS)
@@ -42,7 +40,6 @@ struct AddPatientView: View {
                     }
                 }
                 
-                // Tıbbi Durum ve Güvenlik (Segmented Picker + Dinamik Açıklama)
                 Section("Medical Status & Safety") {
                     Picker("Condition", selection: $warningFlag) {
                         Text("Normal").tag("Normal")
@@ -81,7 +78,6 @@ struct AddPatientView: View {
         }
     }
     
-    // İlk versiyonundaki mantığı daha da geliştirerek korudum
     private var statusDescription: String {
         switch warningFlag {
         case "Suicidal": return "Red Alert: High self-harm risk. Monitor closely."
@@ -90,7 +86,6 @@ struct AddPatientView: View {
         }
     }
     
-    // Açıklama metnine dinamik renk ekledim (Görsel uyarı için)
     private var statusColor: Color {
         switch warningFlag {
         case "Suicidal": return .red
